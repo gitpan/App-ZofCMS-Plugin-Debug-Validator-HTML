@@ -14,6 +14,7 @@ my $builder = Module::Build->new(
         'App::ZofCMS::Test::Plugin' => 0.0104,
     },
     requires => {
+        'HTML::Entities' => 1.35,
         'WebService::Validator::HTML::W3C' => 0.22,
         'LWP::UserAgent'                   => 2.036,
     },

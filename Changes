@@ -1,5 +1,8 @@
 Revision history for App-ZofCMS-Plugin-Debug-Validator-HTML
 
+0.0102  November 7, 2008
+        Added some pretty styles as well as the "validate" link
+
 0.0101  November 6, 2008
         First version, released on an unsuspecting world.
 

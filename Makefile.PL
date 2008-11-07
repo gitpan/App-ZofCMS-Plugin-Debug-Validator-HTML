@@ -10,7 +10,8 @@ WriteMakefile
           'PREREQ_PM' => {
                            'Test::More' => 0,
                            'LWP::UserAgent' => '2.036',
-                           'WebService::Validator::HTML::W3C' => '0.22'
+                           'WebService::Validator::HTML::W3C' => '0.22',
+                           'HTML::Entities' => '1.35'
                          }
         )
 ;

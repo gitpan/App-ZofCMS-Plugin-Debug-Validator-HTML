@@ -3,10 +3,11 @@ package App::ZofCMS::Plugin::Debug::Validator::HTML;
 use warnings;
 use strict;
 
-our $VERSION = '0.0101';
+our $VERSION = '0.0102';
 
 use WebService::Validator::HTML::W3C;
 use LWP::UserAgent;
+use HTML::Entities;
 
 sub new { bless {}, shift }
 
@@ -28,13 +29,24 @@ sub process {
             . $ENV{SCRIPT_NAME} . '?' . $query_string;
     }
 
+    my $link = $conf{address} =~ /\?/
+        ? "$conf{address}&$conf{q_name}=1"
+        : "$conf{address}?$conf{q_name}=1";
+
+    encode_entities $link;
+
+    $template->{t}{ $conf{t_name} . '_link' } = "<div><a href='$link'>Validate</a></div>";
+
     return
         unless $query->{ $conf{q_name} };
+
+    $template->{t}{ $conf{t_name} . '_link' } =
+        "<div><a href='" . encode_entities($conf{address}) . "'>Turn off validation</a></div>";
 
     my $response = LWP::UserAgent->new->get( $conf{address} );
     unless ( $response->is_success ) {
         $template->{t}{ $conf{t_name} }
-        = "Error fetching your page: [$conf{address}] " . $response->status_line;
+        = _wrap("Error fetching your page: [$conf{address}] " . $response->status_line);
         return;
     }
 
@@ -45,26 +57,33 @@ sub process {
     );
 
     unless ( $val->validate_markup( $response->content ) ) {
-        $template->{t}{ $conf{t_name} } = 'Validator error: ' . $val->validator_error;
+        $template->{t}{ $conf{t_name} } = _wrap('Validator error: ' . $val->validator_error);
         return;
     }
     my $num_errors = $val->num_errors;
 
     unless ( $num_errors ) {
-        $template->{t}{ $conf{t_name} } = 'HTML is valid';
+        $template->{t}{ $conf{t_name} } = _wrap('HTML is <b>VALID</b>');
         return;
     }
 
     my @out = ( "Invalid: <b>$num_errors</b> errors" );
 
     foreach my $error ( @{ $val->errors } ) {
-        push @out, sprintf "line: %s, col: %s, error: %s",
+        push @out, sprintf q|line: <b>%s</b>, col: <b>%s</b>, error: <b>%s</b>|,
                 map $error->$_, qw/line col msg/;
     }
 
-    $template->{t}{ $conf{t_name} } = join "\n", map "<p>$_</p>", @out;
+    $template->{t}{ $conf{t_name} } = _wrap( join "\n",
+        map qq|<p style="border-bottom: 1px solid #000;">$_</p>|, @out
+    );
 
     return;
+}
+
+sub _wrap {
+    my $content = shift;
+    return "<div style='border: 2px solid #f00'>$content</div>\n";
 }
 
 1;
@@ -164,13 +183,18 @@ argument that takes a string that is the URI to the page you wish to validate.
 =head1 HTML::Template VARIABLES
 
     <tmpl_var name='plug_val_html'>
+    <tmpl_var name='plug_val_html_link'>
 
-The plugin sets only one L<HTML::Template> variable; its name is what you set in
+The plugin sets two L<HTML::Template> variables in C<{t}> key; its name is what you set in
 C<t_name> argument, which defaults to C<plug_val_html>.
 
 If your HTML code is valid, this variable will be replaced with words C<HTML is valid>.
 Otherwise you'll see either an error message for why validation failed or actual error
 messages that explain why your HTML is invalid.
+
+The second variable will contain a link to either turn on or turn off validation. The name
+of that variable is contructed by appending C<_link> to the C<t_name> argument, thus
+by default it will be C<< <tmpl_var name='plug_val_html_link'> >>
 
 =head1 USAGE NOTES
 
