@@ -1,0 +1,22 @@
+---
+name: App-ZofCMS-Plugin-Debug-Validator-HTML
+version: 0.0101
+author:
+  - "Zoffix <'zoffix@cpan.org'>"
+abstract: debugging plugin for auto validating HTML
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+requires:
+  LWP::UserAgent: 2.036
+  WebService::Validator::HTML::W3C: 0.22
+build_requires:
+  Test::More: 0
+provides:
+  App::ZofCMS::Plugin::Debug::Validator::HTML:
+    file: lib/App/ZofCMS/Plugin/Debug/Validator/HTML.pm
+    version: 0.0101
+generated_by: Module::Build version 0.2808
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2
