@@ -17,7 +17,9 @@ my $builder = Module::Build->new(
         'HTML::Entities' => 1.35,
         'WebService::Validator::HTML::W3C' => 0.22,
         'LWP::UserAgent'                   => 2.036,
+        perl                               => '5.006',
     },
+    configure_requires => { 'Module::Build' => 0 },
     add_to_cleanup      => [ 'App-ZofCMS-Plugin-Debug-Validator-HTML-*' ],
     create_makefile_pl => 'traditional',
 );

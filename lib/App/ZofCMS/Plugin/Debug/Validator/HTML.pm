@@ -3,7 +3,7 @@ package App::ZofCMS::Plugin::Debug::Validator::HTML;
 use warnings;
 use strict;
 
-our $VERSION = '0.0102';
+our $VERSION = '0.0103';
 
 use WebService::Validator::HTML::W3C;
 use LWP::UserAgent;
@@ -24,11 +24,15 @@ sub process {
     );
     unless ( defined $conf{address} ) {
         my $query_string = $ENV{QUERY_STRING};
-        $query_string =~ s/&?\Q$conf{q_name}=\E[^&]+//g;
+        $query_string =~ s/&?\Q$conf{q_name}=\E[^&]+//g
+            if defined $query_string;
         $conf{address} = 'http://' . $ENV{SERVER_NAME}
-            . $ENV{SCRIPT_NAME} . '?' . $query_string;
+            . $ENV{SCRIPT_NAME} . '?' . $query_string
+                if defined $ENV{SCRIPT_NAME};
     }
 
+    $conf{address} //= '';      
+    
     my $link = $conf{address} =~ /\?/
         ? "$conf{address}&$conf{q_name}=1"
         : "$conf{address}?$conf{q_name}=1";
@@ -88,6 +92,8 @@ sub _wrap {
 
 1;
 __END__
+
+=encoding utf8
 
 =head1 NAME
 

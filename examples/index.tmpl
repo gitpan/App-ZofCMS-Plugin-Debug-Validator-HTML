@@ -1,0 +1,9 @@
+{
+    plugins => [ qw/Debug::Validator::HTML/ ],
+    plug_validator_html => {
+        t_name          => 'plug_val_html',
+        q_name          => 'plug_val_html',
+        validator_uri   => 'http://127.0.0.1/w3c-markup-validator/check',
+        address         => 'http://your.site.com/index.pl?page=/test',
+    },
+}

@@ -1,7 +1,7 @@
 App-ZofCMS-Plugin-Debug-Validator-HTML
 
-The module is a B<debugging> plugin for L<App::ZofCMS> that provides means to validate the HTML
-code that you are writing on the spot.
+The module is a B<debugging> plugin for L<App::ZofCMS> that provides
+means to validate the HTML code that you are writing on the spot.
 
 INSTALLATION
 
