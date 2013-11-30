@@ -3,7 +3,7 @@ package App::ZofCMS::Plugin::Debug::Validator::HTML;
 use warnings;
 use strict;
 
-our $VERSION = '0.0103';
+our $VERSION = '0.0104';
 
 use WebService::Validator::HTML::W3C;
 use LWP::UserAgent;
@@ -31,8 +31,9 @@ sub process {
                 if defined $ENV{SCRIPT_NAME};
     }
 
-    $conf{address} //= '';      
-    
+    $conf{address} = ''
+        unless defined $conf{address};
+
     my $link = $conf{address} =~ /\?/
         ? "$conf{address}&$conf{q_name}=1"
         : "$conf{address}?$conf{q_name}=1";
@@ -135,7 +136,7 @@ You need to include the plugin in the list of plugins to be executed.
         t_name          => 'plug_val_html',
         q_name          => 'plug_val_html',
         validator_uri   => 'http://127.0.0.1/w3c-markup-validator/check',
-        address         => 'http://your.site.com/index.pl?page=/test', 
+        address         => 'http://your.site.com/index.pl?page=/test',
     }
 
 The plugin takes its optional configuration from C<plug_validator_html> first-level key that

@@ -23,5 +23,8 @@ my $builder = Module::Build->new(
     add_to_cleanup      => [ 'App-ZofCMS-Plugin-Debug-Validator-HTML-*' ],
     create_makefile_pl => 'traditional',
 );
+if ( $ENV{RELEASE_TESTING} ) {
+    system('pod2text lib/App/ZofCMS/Plugin/Debug/Validator/HTML.pm > README');
+}
 
 $builder->create_build_script();

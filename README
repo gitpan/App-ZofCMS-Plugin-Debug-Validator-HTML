@@ -1,43 +1,157 @@
-App-ZofCMS-Plugin-Debug-Validator-HTML
+NAME
+    App::ZofCMS::Plugin::Debug::Validator::HTML - debugging plugin for auto
+    validating HTML
 
-The module is a B<debugging> plugin for L<App::ZofCMS> that provides
-means to validate the HTML code that you are writing on the spot.
+SYNOPSIS
+    In your Main Config file or ZofCMS Template:
 
-INSTALLATION
+        plugins => [ 'Debug::Validator::HTML' ]
 
-To install this module, run the following commands:
+    In your HTML::Template template:
 
-	perl Build.PL
-	./Build
-	./Build test
-	./Build install
+        <tmpl_var name="plug_val_html">
 
-SUPPORT AND DOCUMENTATION
+    Access your page with
+    <http://your.domain.com/index.pl?page=/test&plug_val_html=1>
 
-After installing, you can find documentation for this module with the
-perldoc command.
+    Read the validation results \o/
 
-    perldoc App::ZofCMS::Plugin::Debug::Validator::HTML
+DESCRIPTION
+    The module is a debugging plugin for App::ZofCMS that provides means to
+    validate the HTML code that you are writing on the spot.
 
-You can also look for information at:
+    This documentation assumes you've read App::ZofCMS, App::ZofCMS::Config
+    and App::ZofCMS::Template
 
-    RT, CPAN's request tracker
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=App-ZofCMS-Plugin-Debug-Validator-HTML
+MAIN CONFIG FILE AND ZofCMS TEMPLATE FIRST-LEVEL KEYS
+  "plugins"
+        plugins => [ qw/Debug::Validator::HTML/ ],
 
-    AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/App-ZofCMS-Plugin-Debug-Validator-HTML
+    You need to include the plugin in the list of plugins to be executed.
 
-    CPAN Ratings
-        http://cpanratings.perl.org/d/App-ZofCMS-Plugin-Debug-Validator-HTML
+  "plug_validator_html"
+        # everything is optional
+        plug_validator_html => {
+            t_name          => 'plug_val_html',
+            q_name          => 'plug_val_html',
+            validator_uri   => 'http://127.0.0.1/w3c-markup-validator/check',
+            address         => 'http://your.site.com/index.pl?page=/test',
+        }
 
-    Search CPAN
-        http://search.cpan.org/dist/App-ZofCMS-Plugin-Debug-Validator-HTML
+    The plugin takes its optional configuration from "plug_validator_html"
+    first-level key that takes a hashref as a value. Plugin will still run
+    even if "plug_validator_html" key is not present. You can set any of the
+    config options in either Main Config File or ZofCMS Template file.
+    Whatever you set in ZofCMS Template file will override the same key if
+    it was set in Main Config File. Possible keys/values are as follows:
 
+   "t_name"
+        t_name => 'plug_val_html',
 
-COPYRIGHT AND LICENCE
+    Optional. The plugin sets validation results in one of the keys in the
+    "{t}" special key. The "t_name" argument specifies the name of that key.
+    See "HTML::Template VARIABLES" section below for details. Defaults to:
+    "plug_val_html"
 
-Copyright (C) 2008 'Zoffix
+   "q_name"
+        q_name => 'plug_val_html',
 
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+    Optional. To trigger the execution of the plugin you need to pass a
+    query parameter that is set to a true value. This is to speed up normal
+    development process (because you don't really want to validate on every
+    refresh) but most importantly it is to prevent infinite loops where the
+    plugin will try to execute itself while fetching your HTML for
+    validation. See "SYNOPSIS" section for example on how to trigger the
+    validator with this query parameter. Defaults to: "plug_val_html"
+
+   "validator_uri"
+        validator_uri   => 'http://127.0.0.1/w3c-markup-validator/check',
+
+    Optional. Plugin accesses a W3C markup validator. The "validator_uri"
+    argument takes a URI pointing to the validator. It would be REALLY GREAT
+    if you'd download the validator for your system and use a local version.
+    Debian/Ubuntu users can do it as simple as "sudo apt-get install
+    w3c-markup-validator", others see <http://validator.w3.org/source/>. If
+    you cannot install a local version of the validator set "validator_uri"
+    to <http://validator.w3.org/check>. Defaults to:
+    "http://127.0.0.1/w3c-markup-validator/check"
+
+   "address"
+        address => 'http://your.site.com/index.pl?page=/test',
+
+    Optional. The plugin uses needs to fetch your page in order to get the
+    markup to validate. Generally you don't need to touch "address" argument
+    as the plugin will do its black magic to figure out, but in case it
+    fails you can set it or wish to validate some other page that is not the
+    one on which you are displaying the results, you can set the "address"
+    argument that takes a string that is the URI to the page you wish to
+    validate.
+
+HTML::Template VARIABLES
+        <tmpl_var name='plug_val_html'>
+        <tmpl_var name='plug_val_html_link'>
+
+    The plugin sets two HTML::Template variables in "{t}" key; its name is
+    what you set in "t_name" argument, which defaults to "plug_val_html".
+
+    If your HTML code is valid, this variable will be replaced with words
+    "HTML is valid". Otherwise you'll see either an error message for why
+    validation failed or actual error messages that explain why your HTML is
+    invalid.
+
+    The second variable will contain a link to either turn on or turn off
+    validation. The name of that variable is contructed by appending "_link"
+    to the "t_name" argument, thus by default it will be "<tmpl_var
+    name='plug_val_html_link'>"
+
+USAGE NOTES
+    You'd probably would want to include the plugin to execute in your Main
+    Config File and put the "<tmpl_var name="">" in your base template while
+    developing the site. Just don't forget to take it out when you done ;)
+
+    PLEASE! Install a local validator. Tons of people already accessing the
+    one that is hosted in "http://w3.org", don't make the lag worse.
+
+AUTHOR
+    'Zoffix, "<'zoffix at cpan.org'>" (<http://zoffix.com/>,
+    <http://haslayout.net/>, <http://zofdesign.com/>)
+
+BUGS
+    Please report any bugs or feature requests to
+    "bug-app-zofcms-plugin-debug-validator-html at rt.cpan.org", or through
+    the web interface at
+    <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=App-ZofCMS-Plugin-Debug-
+    Validator-HTML>. I will be notified, and then you'll automatically be
+    notified of progress on your bug as I make changes.
+
+SUPPORT
+    You can find documentation for this module with the perldoc command.
+
+        perldoc App::ZofCMS::Plugin::Debug::Validator::HTML
+
+    You can also look for information at:
+
+    *   RT: CPAN's request tracker
+
+        <http://rt.cpan.org/NoAuth/Bugs.html?Dist=App-ZofCMS-Plugin-Debug-Va
+        lidator-HTML>
+
+    *   AnnoCPAN: Annotated CPAN documentation
+
+        <http://annocpan.org/dist/App-ZofCMS-Plugin-Debug-Validator-HTML>
+
+    *   CPAN Ratings
+
+        <http://cpanratings.perl.org/d/App-ZofCMS-Plugin-Debug-Validator-HTM
+        L>
+
+    *   Search CPAN
+
+        <http://search.cpan.org/dist/App-ZofCMS-Plugin-Debug-Validator-HTML>
+
+COPYRIGHT & LICENSE
+    Copyright 2008 'Zoffix, all rights reserved.
+
+    This program is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
 

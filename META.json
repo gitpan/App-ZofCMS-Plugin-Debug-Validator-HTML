@@ -36,7 +36,7 @@
    "provides" : {
       "App::ZofCMS::Plugin::Debug::Validator::HTML" : {
          "file" : "lib/App/ZofCMS/Plugin/Debug/Validator/HTML.pm",
-         "version" : "0.0103"
+         "version" : "0.0104"
       }
    },
    "release_status" : "stable",
@@ -45,5 +45,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "0.0103"
+   "version" : "0.0104"
 }
